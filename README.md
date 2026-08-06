@@ -142,16 +142,17 @@ ORDER SIBLINGS BY ORDEN_MENU;
 
 ## Configuración de la aplicación
 
-Configura la conexión en `src/main/resources/application.properties` (o mediante variables de entorno):
+Las credenciales de la base de datos **no** se guardan en `application.properties`; se leen desde variables de entorno (archivo `.env`, ignorado por git) para no exponer secretos en el repositorio.
+
+Crea un archivo `.env` en la raíz del proyecto con tus valores reales:
 
 ```properties
-spring.application.name=wsr_biblioteca
-
-spring.datasource.url=jdbc:oracle:thin:@//localhost:1521/FREEPDB1
-spring.datasource.username=BD_BIBLIOTECA
-spring.datasource.password=Rmi11dp009
-spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+DB_URL=jdbc:oracle:thin:@//localhost:1521/FREEPDB1
+DB_USERNAME=BD_BIBLIOTECA
+DB_PASSWORD=Rmi11dp009
 ```
+
+`application.properties` referencia estas variables mediante `${DB_URL}`, `${DB_USERNAME}` y `${DB_PASSWORD}` (cargadas automáticamente vía `spring.config.import=optional:file:.env[.properties]`). En entornos compartidos o de producción, define estas mismas variables como variables de entorno reales del sistema (o un gestor de secretos) en lugar de usar el archivo `.env`.
 
 ## Ejecución
 
@@ -174,6 +175,7 @@ spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
 ## Estructura del proyecto
 
 ```
+.env                   # variables de entorno reales, ignorado por git
 src/
 ├── main/
 │   ├── java/com/jhontruse/biblioteca/
